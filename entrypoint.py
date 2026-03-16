@@ -32,6 +32,13 @@ def main():
 def change_owner(user, repository_root):
     # GitHub sets root as owner of repository directory. Change it to user
     # And return to root after all commands
+    import pwd
+    try:
+        # Check if the specified user exists
+        pwd.getpwnam(user)
+    except KeyError:
+        # User doesn't exist (e.g., 'user' in GitHub Actions), use current runtime user
+        user = pwd.getpwuid(os.getuid()).pw_name
     subprocess.check_call(["sudo", "chown", "-R", user, repository_root])
 
 
